@@ -1,0 +1,45 @@
+name: VPS change
+description: Track a server, Docker, routing, folder, or permission change.
+title: "[VPS] "
+labels: ["vps-change", "needs-log"]
+body:
+  - type: dropdown
+    id: vps
+    attributes:
+      label: VPS
+      options:
+        - main-vps
+        - secondary-vps
+        - hermes
+        - unknown
+    validations:
+      required: true
+  - type: input
+    id: changed_by
+    attributes:
+      label: Changed by
+      placeholder: Cody, Manus, Harry, Edith, Terry
+    validations:
+      required: true
+  - type: textarea
+    id: change
+    attributes:
+      label: What changed?
+      description: Include paths, services, containers, and commands where useful.
+    validations:
+      required: true
+  - type: textarea
+    id: verification
+    attributes:
+      label: Verification
+      description: Health checks, logs, endpoint tests, or browser checks.
+    validations:
+      required: false
+  - type: textarea
+    id: rollback
+    attributes:
+      label: Rollback note
+      description: How do we undo this if it causes problems?
+    validations:
+      required: false
+

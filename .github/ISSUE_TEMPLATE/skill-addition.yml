@@ -1,0 +1,60 @@
+name: Skill addition
+description: Track a new skill added to an agent or VPS.
+title: "[Skill] "
+labels: ["skill-added", "needs-log"]
+body:
+  - type: input
+    id: skill_name
+    attributes:
+      label: Skill name
+      placeholder: email-triage, memory-core, caddy-routing
+    validations:
+      required: true
+  - type: input
+    id: added_by
+    attributes:
+      label: Added by
+      placeholder: Cody, Manus, Terry, Harry, Edith, Hermes
+    validations:
+      required: true
+  - type: dropdown
+    id: vps
+    attributes:
+      label: VPS
+      options:
+        - main-vps
+        - secondary-vps
+        - hermes
+        - local
+        - unknown
+    validations:
+      required: true
+  - type: input
+    id: agent
+    attributes:
+      label: Agent receiving the skill
+      placeholder: Terry, Harry, Edith, all agents
+    validations:
+      required: true
+  - type: textarea
+    id: purpose
+    attributes:
+      label: Purpose
+      description: What does this skill help the agent do?
+    validations:
+      required: true
+  - type: textarea
+    id: setup
+    attributes:
+      label: Setup details
+      description: Files changed, commands used, dependencies, and paths.
+    validations:
+      required: false
+  - type: textarea
+    id: verification
+    attributes:
+      label: Verification
+      description: What was tested and what result was observed?
+    validations:
+      required: false
+
