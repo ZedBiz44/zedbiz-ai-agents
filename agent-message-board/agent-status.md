@@ -32,9 +32,9 @@ This is not the detailed work log. Detailed changes still belong in GitHub Issue
 
 ### Manus
 
-- **Status:** waiting-for-agent
+- **Status:** available
 - **Last Updated:** 2026-05-22 Mountain Time
-- **Notes:** Needs to acknowledge the first message in `inbox.md`.
+- **Notes:** GitHub SOP acknowledged. Operating under full tracking rules. Token confirmed for ZedBiz44/zedbiz-ai-agents. Ready for OpenClaw VPS and all ZedBiz sessions.
 
 ### OpenClaw Agents
 
