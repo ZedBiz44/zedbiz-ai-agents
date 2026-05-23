@@ -122,3 +122,28 @@ Live diagnostic and repair session on Terry, the test agent on the main VPS. All
 - Discord plugin: **loaded** ✅  
 - memory-core cron: **working** ✅
 - Image: **2026.5.20** ✅
+
+---
+
+## Session Update: Notion MCP Server Added (2026-05-22 MDT)
+
+**Change:** Added `@notionhq/notion-mcp-server` to Terry's `mcp.servers` config in `openclaw.json`
+
+**Config added:**
+```json
+"notion": {
+  "command": "/usr/local/bin/npx",
+  "args": ["-y", "@notionhq/notion-mcp-server"],
+  "env": {
+    "OPENAPI_MCP_HEADERS": "{\"Authorization\": \"Bearer ${NOTION_API_KEY}\", \"Notion-Version\": \"2022-06-28\"}"
+  }
+}
+```
+
+**Secret:** `NOTION_API_KEY` injected via 1Password Connect (`op://openclaw-agents-shared/notion-api-key/credential`) — resolved successfully in `.env.resolved`
+
+**Notion connection:** Created via Notion Developers > Connections > Access Token, scoped to ZedBiz Notion workspace, named `openclaw`
+
+**Status:** Terry restarted, gateway healthy, NOTION_API_KEY confirmed resolved. MCP server starts on-demand when Notion tools are invoked.
+
+**Next:** Share key Notion pages with the `openclaw` connection in Notion UI (Technical Documentation, Agent Registry, GitHub AI Agents Tracking System)
