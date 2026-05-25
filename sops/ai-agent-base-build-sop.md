@@ -87,7 +87,8 @@ mkdir -p /root/.openclaw-${AGENT_ID}
 ---
 ## Step 5: Install OpenClaw Into Agent's Own Directory
 ```bash
-# Clean up any stale processes before install
+# Clean up stale processes for THIS agent only
+# Do NOT use systemctl stop openclaw-* or pkill -f openclaw — that would kill other running agents
 systemctl stop openclaw-${AGENT_ID} 2>/dev/null || true
 fuser -k ${AGENT_PORT}/tcp 2>/dev/null || true
 ss -ltnp | grep ":${AGENT_PORT} " && echo "FAIL: port in use" && exit 1
@@ -162,6 +163,8 @@ For full 1Password CLI vault setup, see **Phase 1.2 1Password SOP**.
 ---
 ## Step 8: 1Password Secret Injection Wrapper
 **PAUSE — human action required.** Jack must provide the 1Password Service Account token for this agent before continuing.
+
+> **Token file naming:** `.op.token` stores the 1Password service account token. `token.txt` stores the OpenClaw gateway token. Do not mix these up.
 
 Once the token is received, save it and create the `.env` file:
 ```bash
@@ -244,6 +247,10 @@ grep OPENCLAW_CONFIG_PATH /etc/systemd/system/openclaw-${AGENT_ID}.service && ec
 ```bash
 systemctl daemon-reload
 systemctl enable openclaw-${AGENT_ID}
+
+# Pre-start check: global workspace must not exist before we start
+[ ! -d /root/.openclaw/workspace ] || { echo "FAIL: global workspace fallback exists before start"; exit 1; }
+
 systemctl start openclaw-${AGENT_ID}
 sleep 10
 systemctl status openclaw-${AGENT_ID} --no-pager | head -10
@@ -269,16 +276,16 @@ journalctl -u openclaw-${AGENT_ID} -n 20 --no-pager
 ```bash
 ls /root/.openclaw-${AGENT_ID}/
 
-# Verify workspace is NOT in the wrong place
-[ -d /root/.openclaw-${AGENT_ID}/workspace ] || { echo "FAIL: workspace missing"; exit 1; }
-[ ! -d /root/.openclaw/workspace ] || { echo "FAIL: using global workspace"; exit 1; }
+# Note: per-agent workspace may not exist yet before browser first-run — that is expected.
+# Only check that the global fallback does NOT exist at this point.
+[ ! -d /root/.openclaw/workspace ] || { echo "FAIL: global workspace fallback exists"; exit 1; }
 
 # Verify no global fallback data exists
 find /root/.openclaw -maxdepth 3 -type f -o -type d 2>/dev/null
 # If anything meaningful appears here, STOP and investigate before continuing.
 ```
 
-> **HARRY FIRST GATE (AI agents only):** If this is the first agent being installed on this VPS, STOP here. Verify Harry is fully functional before proceeding to Suzy or Edith. Do not install the next agent until Harry passes all checks in this step and Step 13.
+> **Sequential Build Rule:** Install Harry first only. Stop after Harry. Verify Harry completely (Steps 11 and 13 pass, IDENTITY.md created, service stable) before installing Suzy. Verify Suzy completely before installing Edith. Do not batch install multiple agents.
 ---
 ## Step 12: Configure OpenAI Models
 The OpenAI API key is injected via 1Password. Verify it is available:
@@ -304,6 +311,13 @@ After connecting, wait 15-20 seconds then verify state directories were created:
 ```bash
 ls /root/.openclaw-${AGENT_ID}/
 # Expected: agents/ canvas/ flows/ identity/ logs/ memory/ plugin-runtime-deps/ plugin-skills/ tasks/ workspace/
+```
+
+Now that first-run is complete, run the full workspace isolation check:
+```bash
+[ -d /root/.openclaw-${AGENT_ID}/workspace ] || { echo "FAIL: per-agent workspace missing after first-run"; exit 1; }
+[ ! -d /root/.openclaw/workspace ] || { echo "FAIL: global workspace fallback exists"; exit 1; }
+echo "PASS: workspace isolation confirmed"
 ```
 
 Create a per-agent identity marker to confirm workspace isolation:
