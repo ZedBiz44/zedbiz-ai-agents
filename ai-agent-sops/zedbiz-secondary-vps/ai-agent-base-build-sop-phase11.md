@@ -41,7 +41,7 @@ By the end of Phase 1.1, the agent is:
 - Token generated and saved
 - 1Password secrets injected on startup via wrapper script
 - OpenAI API key configured via 1Password, default model GPT-4o, fallback GPT-5.2
-- Workspace files (IDENTITY.md, USER.md, SOUL.md, AGENTS.md) pre-seeded before first launch
+- Workspace files (`IDENTITY.md`, `USER.md`, `SOUL.md`, `AGENTS.md`) pre-seeded before first launch
 - Ready for Phase 2 (skills, Asana, Notion)
 ---
 ## Step 1: Set Variables
@@ -280,9 +280,10 @@ cat > /root/.openclaw-${AGENT_ID}/workspace/AGENTS.md << 'AGENTS_EOF'
 Bundled OpenClaw skills are not installed from ClawHub — they come with the install. But many may show `needs setup` status. Do not assume a skill works until you have checked its status.
 
 For each skill showing `needs setup`:
-- Run `openclaw skills inspect [skill-name]` to read its SKILL.md
-- Check what bins, env vars, or API credentials it requires
-- Install or configure what is needed before using the skill
+- Run `openclaw skills info [skill-name]`
+- Read its setup requirements
+- Check required bins, env vars, or API credentials
+- Configure what is needed before claiming the skill works
 
 ## Tool Use Rule
 Do not guess what tools are available. Check first. If a tool call fails, report the error clearly — do not fabricate a result.
@@ -315,6 +316,8 @@ Initialize git in the workspace and make the first commit:
 ```bash
 cd /root/.openclaw-${AGENT_ID}/workspace
 git init
+git config user.name "${AGENT_NAME}"
+git config user.email "${AGENT_ID}@zedbiz.local"
 git add .
 git commit -m "Initial workspace seed: IDENTITY.md USER.md SOUL.md AGENTS.md"
 echo "OK: workspace git initialized with first commit"
@@ -352,7 +355,7 @@ chmod 600 /root/.openclaw-${AGENT_ID}/.op.token
 cat > /root/.openclaw-${AGENT_ID}/.env << ENV_EOF
 OPENAI_API_KEY=op://openclaw-agents-shared/openai-api-key/credential
 OPENROUTER_API_KEY=op://openclaw-agents-shared/openrouter-api-key/credential
-NOTION_API_KEY=op://openclaw-agents-shared/notion-api-key/credential
+NOTION_API_TOKEN=op://openclaw-agents-shared/notion-api-key/credential
 ENV_EOF
 chmod 600 /root/.openclaw-${AGENT_ID}/.env
 
@@ -361,6 +364,8 @@ chmod 600 /root/.openclaw-${AGENT_ID}/.env
 [ -f "/root/.openclaw-${AGENT_ID}/.env" ] || exit 1
 export OP_SERVICE_ACCOUNT_TOKEN="$(cat /root/.openclaw-${AGENT_ID}/.op.token)"
 op run --env-file=/root/.openclaw-${AGENT_ID}/.env -- printenv OPENAI_API_KEY >/dev/null || exit 1
+op run --env-file=/root/.openclaw-${AGENT_ID}/.env -- printenv OPENROUTER_API_KEY >/dev/null || exit 1
+op run --env-file=/root/.openclaw-${AGENT_ID}/.env -- printenv NOTION_API_TOKEN >/dev/null || exit 1
 echo "PASS: 1Password secrets resolving correctly"
 ```
 
@@ -442,7 +447,7 @@ systemctl show openclaw-${AGENT_ID} -p Environment
 # Assert port listener is on the correct port
 ss -ltnp | grep ":${AGENT_PORT}"
 
-# Check for unexpected nearby internal listeners (should only show the one assigned port)
+# Check for unexpected nearby listeners. Internal OpenClaw listeners may appear, but there must be no collision with another assigned agent port block.
 ss -ltnp | grep -E ':41|:42|:43'
 ```
 If the service fails, check logs:
@@ -467,7 +472,7 @@ echo "OK: no nested workspace"
 echo "OK: no global workspace fallback"
 
 # Scan for any unexpected global fallback data
-find /root/.openclaw -maxdepth 3 -type f -o -type d 2>/dev/null
+find /root/.openclaw -maxdepth 3 \( -type f -o -type d \) 2>/dev/null
 # If anything meaningful appears here, STOP and investigate before continuing.
 ```
 
