@@ -60,7 +60,7 @@ echo "Building $AGENT_NAME ($AGENT_ID) on port $AGENT_PORT at http://$VPS_IP:$AG
 ## Step 2: Install Base Packages
 ```bash
 apt update
-apt install -y curl ca-certificates gnupg git build-essential openssl fail2ban
+apt install -y curl ca-certificates gnupg git build-essential openssl fail2ban psmisc
 ```
 ---
 ## Step 3: Verify Node.js 24
@@ -182,6 +182,7 @@ chmod 600 /root/.openclaw-${AGENT_ID}/.env
 # Assert
 [ -s "/root/.openclaw-${AGENT_ID}/.op.token" ] || exit 1
 [ -f "/root/.openclaw-${AGENT_ID}/.env" ] || exit 1
+export OP_SERVICE_ACCOUNT_TOKEN="$(cat /root/.openclaw-${AGENT_ID}/.op.token)"
 op run --env-file=/root/.openclaw-${AGENT_ID}/.env -- printenv OPENAI_API_KEY >/dev/null || exit 1
 echo "PASS: 1Password secrets resolving correctly"
 ```
@@ -192,7 +193,7 @@ cat > /opt/openclaw-${AGENT_ID}/start-${AGENT_ID}.sh << SCRIPT_EOF
 #!/usr/bin/env bash
 set -euo pipefail
 
-export OP_SERVICE_ACCOUNT_TOKEN="$(cat /root/.openclaw-${AGENT_ID}/.op.token)"
+export OP_SERVICE_ACCOUNT_TOKEN="\$(cat /root/.openclaw-${AGENT_ID}/.op.token)"
 export HOME="/root/.openclaw-${AGENT_ID}"
 export OPENCLAW_STATE_DIR="/root/.openclaw-${AGENT_ID}"
 export OPENCLAW_CONFIG_PATH="/root/.openclaw-${AGENT_ID}/openclaw.json"
@@ -260,8 +261,8 @@ journalctl -u openclaw-${AGENT_ID} -n 20 --no-pager
 ls /root/.openclaw-${AGENT_ID}/
 
 # Verify workspace is NOT in the wrong place
-[ -d /root/.openclaw-${AGENT_ID}/workspace ] || echo "FAIL: workspace missing"
-[ ! -d /root/.openclaw/workspace ] || echo "FAIL: using global workspace"
+[ -d /root/.openclaw-${AGENT_ID}/workspace ] || { echo "FAIL: workspace missing"; exit 1; }
+[ ! -d /root/.openclaw/workspace ] || { echo "FAIL: using global workspace"; exit 1; }
 ```
 ---
 ## Step 12: Configure OpenAI Models
