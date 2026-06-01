@@ -41,6 +41,9 @@
 - Updated the shared Notion template version to `v2026.6.1-concise`.
 - Applied final feedback revision with a concise decision framework, proactive improvement loop, startup context priority rule, and tighter execution/completion section.
 - Updated the shared Notion template version to `v2026.6.1-concise-2`.
+- Added authority conflict handling so Jack's direct instruction wins unless it creates security, legal, production, data-loss, client-trust, or irreversible risk.
+- Added complex/repeated task Skill discovery guidance and post-task Skill creation prompt.
+- Updated the shared Notion template version to `v2026.6.1-concise-3`.
 
 ## Important Correction
 
@@ -49,10 +52,11 @@
 - The template was updated to use skill-checking rules and relevant `SKILL.md` guidance.
 - The concise revision keeps reusable process details out of `AGENTS.md` and pushes specialized methods into Skills.
 - The final revision keeps the file concise while restoring the highest-value behavior rules for ambiguity and proactive improvement.
+- The latest revision clarifies when to search local Skills, installed plugins, and approved hubs such as ClawHub before building from scratch.
 
 ## Test Result
 
-- **What was tested:** Notion page creation, Agent-Documents database placement, Technical Documentation journal update, GitHub repo availability, concise template rewrite, feedback revision, and final Notion template verification.
+- **What was tested:** Notion page creation, Agent-Documents database placement, Technical Documentation journal update, GitHub repo availability, concise template rewrite, feedback revisions, and final Notion template verification.
 - **Result:** Notion template update succeeded. GitHub documentation file was committed and pushed to the remote repo.
 - **Evidence:** Created and updated Notion page `Standard-AGENTS-MD-Template`, updated the Technical Documentation journal record, and pushed this GitHub tracking note.
 
