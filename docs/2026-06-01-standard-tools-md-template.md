@@ -40,6 +40,11 @@
 - Created `Victor-Tools-Template` as a reference copy before removing the infrastructure sections from the shared template.
 - Kept environment summary plus VPS, Docker, and OpenClaw runtime guidance in Victor's version for infrastructure work.
 - Set Victor's template version to `v2026.6.1-victor`.
+- Trimmed the shared general template to reduce daily instruction load.
+- Added a `Startup Verification Rule`.
+- Added a fork-and-remove-unused-categories note for each agent copy.
+- Tightened category descriptions while preserving the tool inventory block.
+- Updated the shared template version to `v2026.6.1-general-2`.
 
 ## Design Notes
 
@@ -49,10 +54,11 @@
 - Kept `TOOLS.md` focused on actual capabilities, invocation details, access requirements, gotchas, and boundaries.
 - Added placeholder blocks so each agent can document real tools instead of only high-level categories.
 - Split the general agent template from Victor's infrastructure reference so non-technical agents do not carry unnecessary VPS or Docker instructions.
+- Kept the inventory block intact because it is the operational core of `TOOLS.md`.
 
 ## Test Result
 
-- **What was tested:** Notion page creation, database placement, page rendering, Victor reference copy creation, shared template slimming, and Technical Documentation journal update.
+- **What was tested:** Notion page creation, database placement, page rendering, Victor reference copy creation, shared template slimming, startup verification revision, and Technical Documentation journal update.
 - **Result:** Shared template and Victor reference template were created and verified.
 - **Evidence:** Created Notion pages `Standard-TOOLS-MD-Template` and `Victor-Tools-Template`, then updated the Technical Documentation journal record.
 
