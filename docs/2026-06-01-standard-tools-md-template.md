@@ -51,6 +51,13 @@
 - Added Web and External Action Rules, including the external action air-gap.
 - Added Final Tool Action Filter.
 - Updated the shared template version to `v2026.6.1-general-3`.
+- Added `Template Customization` section near the top.
+- Compact capability gate key list.
+- Merged Look-Before-Leap and Final Tool Action Filter into one `Tool Action Filter`.
+- Added concrete Skills discovery method.
+- Added filled-in `Example: Notion MCP` inventory entry.
+- Added explicit maintenance trigger for added/broken tools and major new projects.
+- Updated the shared template version to `v2026.6.1-general-4`.
 
 ## Design Notes
 
@@ -62,10 +69,11 @@
 - Split the general agent template from Victor's infrastructure reference so non-technical agents do not carry unnecessary VPS or Docker instructions.
 - Kept the inventory block intact because it is the operational core of `TOOLS.md`.
 - Kept scope, communication, and general behavior rules out of `TOOLS.md` unless they directly affect tool use.
+- Added one concrete example entry to reduce inconsistent customization across agents.
 
 ## Test Result
 
-- **What was tested:** Notion page creation, database placement, page rendering, Victor reference copy creation, shared template slimming, startup verification revision, Tactical Economy integration, and Technical Documentation journal update.
+- **What was tested:** Notion page creation, database placement, page rendering, Victor reference copy creation, shared template slimming, startup verification revision, Tactical Economy integration, final polish revision, and Technical Documentation journal update.
 - **Result:** Shared template and Victor reference template were created and verified.
 - **Evidence:** Created Notion pages `Standard-TOOLS-MD-Template` and `Victor-Tools-Template`, then updated the Technical Documentation journal record.
 
