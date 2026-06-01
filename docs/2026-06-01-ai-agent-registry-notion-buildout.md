@@ -25,35 +25,29 @@
 - Reviewed current OpenClaw-style `AGENTS.md` patterns from live agents and Notion review pages.
 - Drafted the standard OpenClaw `AGENTS.md` operating rules template with sections for:
   - Agent setup
-  - File map
+  - Priorities
   - Startup rules
-  - Guiding principles
-  - Business lens
-  - Daily operating rules
-  - Decision framework
-  - Execution loop
-  - Learned lessons
-  - Proactive patterns
+  - Memory rules
   - Skill rules
   - Tool rules
   - Security rules
-  - Memory and documentation
+  - Routing rules
   - Communication standards
-  - Shared channel behavior
-  - Escalation rules
-  - Heartbeat rules
-  - Bulk and multi-phase work rules
-  - End-of-session rules
+  - Completion rules
+  - Maintenance rules
+- Reworked the template from `Agents MD - Structured Summary.pdf` into a more concise version focused on durable operating constraints.
+- Updated the shared Notion template version to `v2026.6.1-concise`.
 
 ## Important Correction
 
 - Jack clarified that ZedBiz OpenClaw agents use skills as the reusable process layer.
 - Reusable process logic should be handled through OpenClaw skills and the relevant `SKILL.md` files.
 - The template was updated to use skill-checking rules and relevant `SKILL.md` guidance.
+- The concise revision keeps reusable process details out of `AGENTS.md` and pushes specialized methods into Skills.
 
 ## Test Result
 
-- **What was tested:** Notion page creation, Agent-Documents database placement, Technical Documentation journal update, GitHub repo availability, and final Notion template verification.
+- **What was tested:** Notion page creation, Agent-Documents database placement, Technical Documentation journal update, GitHub repo availability, concise template rewrite, and final Notion template verification.
 - **Result:** Notion template update succeeded. GitHub documentation file was committed and pushed to the remote repo.
 - **Evidence:** Created and updated Notion page `Standard-AGENTS-MD-Template`, updated the Technical Documentation journal record, and pushed this GitHub tracking note.
 
