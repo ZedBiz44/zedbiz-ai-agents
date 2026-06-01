@@ -58,6 +58,10 @@
 - Added filled-in `Example: Notion MCP` inventory entry.
 - Added explicit maintenance trigger for added/broken tools and major new projects.
 - Updated the shared template version to `v2026.6.1-general-4`.
+- Updated `Victor-Tools-Template` to mirror the latest shared template improvements while preserving technical/server content.
+- Preserved Victor-specific Environment Summary, Server Safety Rules, VPS SSH example, and VPS/Docker/OpenClaw runtime guidance.
+- Updated Victor template version to `v2026.6.1-victor-2`.
+- Updated Victor character count to `12,082`.
 
 ## Design Notes
 
@@ -70,10 +74,11 @@
 - Kept the inventory block intact because it is the operational core of `TOOLS.md`.
 - Kept scope, communication, and general behavior rules out of `TOOLS.md` unless they directly affect tool use.
 - Added one concrete example entry to reduce inconsistent customization across agents.
+- Victor's version intentionally runs longer than the shared template because server tooling needs stronger path, access, runtime, and safety context.
 
 ## Test Result
 
-- **What was tested:** Notion page creation, database placement, page rendering, Victor reference copy creation, shared template slimming, startup verification revision, Tactical Economy integration, final polish revision, and Technical Documentation journal update.
+- **What was tested:** Notion page creation, database placement, page rendering, Victor reference copy creation, shared template slimming, startup verification revision, Tactical Economy integration, final polish revision, Victor alignment revision, and Technical Documentation journal update.
 - **Result:** Shared template and Victor reference template were created and verified.
 - **Evidence:** Created Notion pages `Standard-TOOLS-MD-Template` and `Victor-Tools-Template`, then updated the Technical Documentation journal record.
 
