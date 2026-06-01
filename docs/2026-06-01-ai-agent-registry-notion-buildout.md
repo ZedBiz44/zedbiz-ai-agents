@@ -6,7 +6,7 @@
 - **Agent:** Manus
 - **System:** Notion, GitHub, OpenClaw, AI Agent Registry
 - **Change Type:** documentation-updated, Notion-structure-created, agent-template-created
-- **Status:** partially-done, Notion-edit-blocked
+- **Status:** done
 
 ## Why This Was Done
 
@@ -47,25 +47,20 @@
 
 ## Important Correction
 
-- Jack clarified that ZedBiz OpenClaw agents do not use `WORKFLOWS.md`.
+- Jack clarified that ZedBiz OpenClaw agents use skills as the reusable process layer.
 - Reusable process logic should be handled through OpenClaw skills and the relevant `SKILL.md` files.
-- The pending template edit removes `WORKFLOWS.md` references and replaces them with skill-checking rules.
+- The template was updated to use skill-checking rules and relevant `SKILL.md` guidance.
 
 ## Test Result
 
-- **What was tested:** Notion page creation, Agent-Documents database placement, Technical Documentation journal creation, and GitHub repo availability.
-- **Result:** Notion creation succeeded earlier in the session. GitHub documentation file was committed and pushed to the remote repo.
-- **Evidence:** Created Notion page `Standard-AGENTS-MD-Template` and this GitHub tracking note.
-
-## Current Blocker
-
-- Notion connector writes are currently returning `Provided authentication token is expired. Please try signing in again.`
-- Because of that, the latest Skills-based edit has not yet been saved into Notion from Codex.
+- **What was tested:** Notion page creation, Agent-Documents database placement, Technical Documentation journal update, GitHub repo availability, and final Notion template verification.
+- **Result:** Notion template update succeeded. GitHub documentation file was committed and pushed to the remote repo.
+- **Evidence:** Created and updated Notion page `Standard-AGENTS-MD-Template`, updated the Technical Documentation journal record, and pushed this GitHub tracking note.
 
 ## Rollback Note
 
 - This GitHub file is documentation-only.
-- If needed, delete this file and replace it with a more detailed action log after Notion access is restored.
+- If needed, update or replace this file with a more detailed action log after agent-specific rollout work begins.
 
 ## Links
 
