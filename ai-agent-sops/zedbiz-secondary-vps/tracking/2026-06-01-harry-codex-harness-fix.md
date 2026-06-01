@@ -71,3 +71,50 @@ missed that batch run. This fix brings Harry into parity with the VPS1 fleet.
 
 ## Links
 - Related VPS1 fix: `ai-agent-sops/zedbiz-main-vps/tracking/2026-05-31-v2026528-upgrade-permissions-branding-systemd.md`
+
+---
+
+## Update 2 -- Root Cause: Stale @openclaw/codex Plugin (v2026.5.26)
+
+### What Was Actually Wrong
+
+The config fix in Update 1 was not sufficient. The deeper root cause was that the
+`@openclaw/codex` npm plugin installed at `/root/.openclaw-harry/npm/` was still on
+**v2026.5.26**, while OpenClaw core was running **v2026.5.28**.
+
+The v2026.5.26 plugin's `harness.js` only accepted provider `"codex"` in its
+`DEFAULT_CODEX_HARNESS_PROVIDER_IDS` set:
+```js
+// OLD (v2026.5.26)
+const DEFAULT_CODEX_HARNESS_PROVIDER_IDS = new Set(["codex"]);
+```
+
+But OpenClaw 2026.5.28 core routes ALL `openai/*` models through the codex harness by
+default (when no custom baseUrl is set). So every `openai/gpt-5.x` model hit the harness
+check and got rejected with "provider is not one of: codex".
+
+The v2026.5.28 plugin correctly accepts `"codex"`, `"openai-codex"`, and `"openai"`:
+```js
+// NEW (v2026.5.28)
+const DEFAULT_CODEX_HARNESS_PROVIDER_IDS = new Set(["codex", "openai-codex", "openai"]);
+```
+
+### Fix Applied
+```bash
+cd /root/.openclaw-harry/npm
+npm install @openclaw/codex@latest @openclaw/discord@latest
+# codex: 2026.5.26 -> 2026.5.28
+# discord: 2026.5.26 -> 2026.5.28
+systemctl restart openclaw-harry
+```
+
+### Verification
+- Service: `active (running)`
+- Logs: `[gateway] ready` -- zero harness errors post-restart
+- `@openclaw/codex` version: `2026.5.28` confirmed
+
+### Note for Suzy
+Suzy was installed fresh with v2026.5.28 and should not have this issue. Verify with:
+```bash
+cat /root/.openclaw-suzy/npm/node_modules/@openclaw/codex/package.json | grep version
+```
