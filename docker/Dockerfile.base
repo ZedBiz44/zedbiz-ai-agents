@@ -1,0 +1,194 @@
+# zedbiz-openclaw-base
+# Single base image for all ZedBiz OpenClaw agents on VPS1.
+# Built on top of the official OpenClaw image with all shared tools baked in.
+# Agents use this image instead of ghcr.io/openclaw/openclaw directly.
+# Victor's image inherits FROM this image and adds Docker CLI + SSH on top.
+#
+# Archive structures verified against actual releases before writing this file.
+#
+# Tools included:
+#   - yt-dlp       YouTube/media data scraper and downloader
+#   - ffprobe      Video metadata analysis (companion to ffmpeg)
+#   - rclone       Cloud storage sync (Google Drive, S3, Dropbox)
+#   - gh           GitHub CLI
+#   - yq           YAML/JSON processor
+#   - pandoc       Document converter (Markdown to Word, HTML to PDF, etc.)
+#   - uv           Fast Python package manager (includes uvx)
+#   - gron         JSON flattener for grep
+#   - glow         Markdown renderer in terminal
+#   - eza          Modern ls replacement with tree view
+#   - duf          Disk usage overview
+#   - fzf          Fuzzy finder
+#   - freeze       Code screenshot generator
+#   - vhs          Terminal session recorder to GIF
+#   - git-cliff    Changelog generator from git commits
+#   - just         Task runner / command shortcuts
+#   - grex         Regex generator from examples
+
+ARG OPENCLAW_VERSION=2026.5.28
+FROM ghcr.io/openclaw/openclaw:${OPENCLAW_VERSION}
+
+# Tool versions -- update these to upgrade
+ARG YTDLP_VERSION=2026.03.17
+ARG RCLONE_VERSION=1.69.3
+ARG GH_VERSION=2.74.1
+ARG YQ_VERSION=4.45.4
+ARG PANDOC_VERSION=3.7.0.2
+ARG UV_VERSION=0.7.8
+ARG GRON_VERSION=0.7.1
+ARG GLOW_VERSION=2.1.0
+ARG EZA_VERSION=0.21.3
+ARG DUF_VERSION=0.8.1
+ARG FZF_VERSION=0.62.0
+ARG FREEZE_VERSION=0.1.6
+ARG VHS_VERSION=0.9.0
+ARG GITCLIFF_VERSION=2.9.0
+ARG JUST_VERSION=1.40.0
+ARG GREX_VERSION=1.4.5
+
+USER root
+
+RUN apt-get update -qq && apt-get install -y -q --no-install-recommends \
+    ca-certificates curl tar xz-utils \
+    && rm -rf /var/lib/apt/lists/*
+
+# yt-dlp -- standalone binary, no Python needed
+# archive: direct binary download (no archive)
+RUN curl -fsSL "https://github.com/yt-dlp/yt-dlp/releases/download/${YTDLP_VERSION}/yt-dlp_linux" \
+    -o /usr/local/bin/yt-dlp && chmod 0755 /usr/local/bin/yt-dlp
+
+# ffprobe -- from the same static ffmpeg build already used for ffmpeg
+# archive: ffmpeg-7.0.2-amd64-static/ffprobe (versioned dir, dynamic)
+RUN curl -fsSL "https://johnvansickle.com/ffmpeg/releases/ffmpeg-release-amd64-static.tar.xz" \
+    -o /tmp/ffmpeg-static.tar.xz \
+    && FFDIR=$(tar -tf /tmp/ffmpeg-static.tar.xz | head -1 | cut -d/ -f1) \
+    && tar -xf /tmp/ffmpeg-static.tar.xz -C /tmp/ ${FFDIR}/ffprobe \
+    && mv /tmp/${FFDIR}/ffprobe /usr/local/bin/ffprobe \
+    && chmod 0755 /usr/local/bin/ffprobe \
+    && rm -rf /tmp/ffmpeg-static.tar.xz /tmp/${FFDIR}
+
+# rclone -- archive: rclone-v1.69.3-linux-amd64/rclone (zip, no unzip in container)
+# Use tar.gz version instead
+RUN curl -fsSL "https://github.com/rclone/rclone/releases/download/v${RCLONE_VERSION}/rclone-v${RCLONE_VERSION}-linux-amd64.deb" \
+    -o /tmp/rclone.deb \
+    && dpkg -i /tmp/rclone.deb \
+    && rm /tmp/rclone.deb
+
+# gh -- GitHub CLI
+# archive: gh_2.74.1_linux_amd64/bin/gh
+RUN curl -fsSL "https://github.com/cli/cli/releases/download/v${GH_VERSION}/gh_${GH_VERSION}_linux_amd64.tar.gz" \
+    -o /tmp/gh.tar.gz \
+    && tar -xzf /tmp/gh.tar.gz -C /tmp/ \
+    && mv /tmp/gh_${GH_VERSION}_linux_amd64/bin/gh /usr/local/bin/gh \
+    && chmod 0755 /usr/local/bin/gh \
+    && rm -rf /tmp/gh.tar.gz /tmp/gh_${GH_VERSION}_linux_amd64
+
+# yq -- YAML/JSON processor
+# archive: direct binary download (no archive)
+RUN curl -fsSL "https://github.com/mikefarah/yq/releases/download/v${YQ_VERSION}/yq_linux_amd64" \
+    -o /usr/local/bin/yq && chmod 0755 /usr/local/bin/yq
+
+# pandoc -- document converter
+# archive: pandoc-3.7.0.2/bin/pandoc
+RUN curl -fsSL "https://github.com/jgm/pandoc/releases/download/${PANDOC_VERSION}/pandoc-${PANDOC_VERSION}-linux-amd64.tar.gz" \
+    -o /tmp/pandoc.tar.gz \
+    && tar -xzf /tmp/pandoc.tar.gz -C /tmp/ \
+    && mv /tmp/pandoc-${PANDOC_VERSION}/bin/pandoc /usr/local/bin/pandoc \
+    && chmod 0755 /usr/local/bin/pandoc \
+    && rm -rf /tmp/pandoc.tar.gz /tmp/pandoc-${PANDOC_VERSION}
+
+# uv -- fast Python package manager
+# archive: uv-x86_64-unknown-linux-musl/uv and uvx
+RUN curl -fsSL "https://github.com/astral-sh/uv/releases/download/${UV_VERSION}/uv-x86_64-unknown-linux-musl.tar.gz" \
+    -o /tmp/uv.tar.gz \
+    && tar -xzf /tmp/uv.tar.gz -C /tmp/ \
+    && mv /tmp/uv-x86_64-unknown-linux-musl/uv /usr/local/bin/uv \
+    && mv /tmp/uv-x86_64-unknown-linux-musl/uvx /usr/local/bin/uvx \
+    && chmod 0755 /usr/local/bin/uv /usr/local/bin/uvx \
+    && rm -rf /tmp/uv.tar.gz /tmp/uv-x86_64-unknown-linux-musl
+
+# gron -- JSON flattener for grep
+# archive: gron (flat, no subdirectory)
+RUN curl -fsSL "https://github.com/tomnomnom/gron/releases/download/v${GRON_VERSION}/gron-linux-amd64-${GRON_VERSION}.tgz" \
+    -o /tmp/gron.tgz \
+    && tar -xzf /tmp/gron.tgz -C /usr/local/bin/ gron \
+    && chmod 0755 /usr/local/bin/gron \
+    && rm /tmp/gron.tgz
+
+# glow -- Markdown renderer
+# archive: glow_2.1.0_Linux_x86_64/glow (versioned dir)
+RUN curl -fsSL "https://github.com/charmbracelet/glow/releases/download/v${GLOW_VERSION}/glow_${GLOW_VERSION}_Linux_x86_64.tar.gz" \
+    -o /tmp/glow.tar.gz \
+    && tar -xzf /tmp/glow.tar.gz -C /tmp/ \
+    && mv /tmp/glow_${GLOW_VERSION}_Linux_x86_64/glow /usr/local/bin/glow \
+    && chmod 0755 /usr/local/bin/glow \
+    && rm -rf /tmp/glow.tar.gz /tmp/glow_${GLOW_VERSION}_Linux_x86_64
+
+# eza -- modern ls replacement
+# archive: ./eza (flat with ./ prefix)
+RUN curl -fsSL "https://github.com/eza-community/eza/releases/download/v${EZA_VERSION}/eza_x86_64-unknown-linux-musl.tar.gz" \
+    -o /tmp/eza.tar.gz \
+    && tar -xzf /tmp/eza.tar.gz -C /usr/local/bin/ ./eza \
+    && chmod 0755 /usr/local/bin/eza \
+    && rm /tmp/eza.tar.gz
+
+# duf -- disk usage overview
+# archive: duf (flat, no subdirectory)
+RUN curl -fsSL "https://github.com/muesli/duf/releases/download/v${DUF_VERSION}/duf_${DUF_VERSION}_Linux_x86_64.tar.gz" \
+    -o /tmp/duf.tar.gz \
+    && tar -xzf /tmp/duf.tar.gz -C /usr/local/bin/ duf \
+    && chmod 0755 /usr/local/bin/duf \
+    && rm /tmp/duf.tar.gz
+
+# fzf -- fuzzy finder
+# archive: fzf (flat, no subdirectory)
+RUN curl -fsSL "https://github.com/junegunn/fzf/releases/download/v${FZF_VERSION}/fzf-${FZF_VERSION}-linux_amd64.tar.gz" \
+    -o /tmp/fzf.tar.gz \
+    && tar -xzf /tmp/fzf.tar.gz -C /usr/local/bin/ fzf \
+    && chmod 0755 /usr/local/bin/fzf \
+    && rm /tmp/fzf.tar.gz
+
+# freeze -- code screenshot generator
+# archive: freeze_0.1.6_Linux_x86_64/freeze (versioned dir)
+RUN curl -fsSL "https://github.com/charmbracelet/freeze/releases/download/v${FREEZE_VERSION}/freeze_${FREEZE_VERSION}_Linux_x86_64.tar.gz" \
+    -o /tmp/freeze.tar.gz \
+    && tar -xzf /tmp/freeze.tar.gz -C /tmp/ \
+    && mv /tmp/freeze_${FREEZE_VERSION}_Linux_x86_64/freeze /usr/local/bin/freeze \
+    && chmod 0755 /usr/local/bin/freeze \
+    && rm -rf /tmp/freeze.tar.gz /tmp/freeze_${FREEZE_VERSION}_Linux_x86_64
+
+# vhs -- terminal recorder to GIF
+# archive: vhs_0.9.0_Linux_x86_64/vhs (versioned dir)
+RUN curl -fsSL "https://github.com/charmbracelet/vhs/releases/download/v${VHS_VERSION}/vhs_${VHS_VERSION}_Linux_x86_64.tar.gz" \
+    -o /tmp/vhs.tar.gz \
+    && tar -xzf /tmp/vhs.tar.gz -C /tmp/ \
+    && mv /tmp/vhs_${VHS_VERSION}_Linux_x86_64/vhs /usr/local/bin/vhs \
+    && chmod 0755 /usr/local/bin/vhs \
+    && rm -rf /tmp/vhs.tar.gz /tmp/vhs_${VHS_VERSION}_Linux_x86_64
+
+# git-cliff -- changelog generator
+# archive: git-cliff-2.9.0/git-cliff (versioned dir)
+RUN curl -fsSL "https://github.com/orhun/git-cliff/releases/download/v${GITCLIFF_VERSION}/git-cliff-${GITCLIFF_VERSION}-x86_64-unknown-linux-musl.tar.gz" \
+    -o /tmp/gitcliff.tar.gz \
+    && tar -xzf /tmp/gitcliff.tar.gz -C /tmp/ \
+    && mv /tmp/git-cliff-${GITCLIFF_VERSION}/git-cliff /usr/local/bin/git-cliff \
+    && chmod 0755 /usr/local/bin/git-cliff \
+    && rm -rf /tmp/gitcliff.tar.gz /tmp/git-cliff-${GITCLIFF_VERSION}
+
+# just -- task runner
+# archive: just (flat, no subdirectory)
+RUN curl -fsSL "https://github.com/casey/just/releases/download/${JUST_VERSION}/just-${JUST_VERSION}-x86_64-unknown-linux-musl.tar.gz" \
+    -o /tmp/just.tar.gz \
+    && tar -xzf /tmp/just.tar.gz -C /usr/local/bin/ just \
+    && chmod 0755 /usr/local/bin/just \
+    && rm /tmp/just.tar.gz
+
+# grex -- regex generator
+# archive: grex (flat, no subdirectory)
+RUN curl -fsSL "https://github.com/pemistahl/grex/releases/download/v${GREX_VERSION}/grex-v${GREX_VERSION}-x86_64-unknown-linux-musl.tar.gz" \
+    -o /tmp/grex.tar.gz \
+    && tar -xzf /tmp/grex.tar.gz -C /usr/local/bin/ grex \
+    && chmod 0755 /usr/local/bin/grex \
+    && rm /tmp/grex.tar.gz
+
+USER node
