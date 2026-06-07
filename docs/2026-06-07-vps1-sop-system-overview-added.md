@@ -30,3 +30,14 @@ Describes the VPS1 Docker Agent Setup:
 | Native Gateway (Multi-Agent) | Single process hosts all agents natively. Lightest footprint, but no isolation. |
 
 **Bottom line:** VPS1 Docker is the sweet spot for isolation, speed, and maintainability at scale.
+
+## Correction -- 2026-06-07 (Same Day)
+
+**Issue:** VPS2 was incorrectly described as "Docker with individual images."
+**Fix:** VPS2 is a **folder-based + systemd** model (no Docker). Each agent gets:
+- Install folder: `/opt/openclaw-{name}/`
+- State folder: `/root/.openclaw-{name}/`
+- Dedicated `systemd` service unit
+- Nginx reverse proxy for per-agent branding
+
+Updated the comparison table on the VPS1 SOP Notion page to reflect the correct VPS2 architecture.
