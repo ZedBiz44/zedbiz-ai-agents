@@ -14,6 +14,7 @@
 #   - yq           YAML/JSON processor
 #   - pandoc       Document converter (Markdown to Word, HTML to PDF, etc.)
 #   - uv           Fast Python package manager (includes uvx)
+#   - debugpy      Python remote debugging (installed via uv pip)
 #   - gron         JSON flattener for grep
 #   - glow         Markdown renderer in terminal
 #   - eza          Modern ls replacement with tree view
@@ -25,26 +26,27 @@
 #   - just         Task runner / command shortcuts
 #   - grex         Regex generator from examples
 
-ARG OPENCLAW_VERSION=2026.5.28
+ARG OPENCLAW_VERSION=2026.6.5
 FROM ghcr.io/openclaw/openclaw:${OPENCLAW_VERSION}
 
 # Tool versions -- update these to upgrade
-ARG YTDLP_VERSION=2026.03.17
-ARG RCLONE_VERSION=1.69.3
-ARG GH_VERSION=2.74.1
-ARG YQ_VERSION=4.45.4
-ARG PANDOC_VERSION=3.7.0.2
-ARG UV_VERSION=0.7.8
+ARG YTDLP_VERSION=2026.06.09
+ARG RCLONE_VERSION=1.74.3
+ARG GH_VERSION=2.94.0
+ARG YQ_VERSION=4.53.3
+ARG PANDOC_VERSION=3.10
+ARG UV_VERSION=0.11.20
+ARG DEBUGPY_VERSION=1.8.21
 ARG GRON_VERSION=0.7.1
-ARG GLOW_VERSION=2.1.0
-ARG EZA_VERSION=0.21.3
-ARG DUF_VERSION=0.8.1
-ARG FZF_VERSION=0.62.0
-ARG FREEZE_VERSION=0.1.6
-ARG VHS_VERSION=0.9.0
-ARG GITCLIFF_VERSION=2.9.0
-ARG JUST_VERSION=1.40.0
-ARG GREX_VERSION=1.4.5
+ARG GLOW_VERSION=2.1.2
+ARG EZA_VERSION=0.23.4
+ARG DUF_VERSION=0.9.1
+ARG FZF_VERSION=0.73.1
+ARG FREEZE_VERSION=0.2.2
+ARG VHS_VERSION=0.11.0
+ARG GITCLIFF_VERSION=2.13.1
+ARG JUST_VERSION=1.52.0
+ARG GREX_VERSION=1.4.6
 
 USER root
 
@@ -67,15 +69,14 @@ RUN curl -fsSL "https://johnvansickle.com/ffmpeg/releases/ffmpeg-release-amd64-s
     && chmod 0755 /usr/local/bin/ffprobe \
     && rm -rf /tmp/ffmpeg-static.tar.xz /tmp/${FFDIR}
 
-# rclone -- archive: rclone-v1.69.3-linux-amd64/rclone (zip, no unzip in container)
-# Use tar.gz version instead
+# rclone -- archive: rclone-v1.74.3-linux-amd64.deb
 RUN curl -fsSL "https://github.com/rclone/rclone/releases/download/v${RCLONE_VERSION}/rclone-v${RCLONE_VERSION}-linux-amd64.deb" \
     -o /tmp/rclone.deb \
     && dpkg -i /tmp/rclone.deb \
     && rm /tmp/rclone.deb
 
 # gh -- GitHub CLI
-# archive: gh_2.74.1_linux_amd64/bin/gh
+# archive: gh_2.94.0_linux_amd64/bin/gh
 RUN curl -fsSL "https://github.com/cli/cli/releases/download/v${GH_VERSION}/gh_${GH_VERSION}_linux_amd64.tar.gz" \
     -o /tmp/gh.tar.gz \
     && tar -xzf /tmp/gh.tar.gz -C /tmp/ \
@@ -89,7 +90,7 @@ RUN curl -fsSL "https://github.com/mikefarah/yq/releases/download/v${YQ_VERSION}
     -o /usr/local/bin/yq && chmod 0755 /usr/local/bin/yq
 
 # pandoc -- document converter
-# archive: pandoc-3.7.0.2/bin/pandoc
+# archive: pandoc-3.10/bin/pandoc (versioned dir)
 RUN curl -fsSL "https://github.com/jgm/pandoc/releases/download/${PANDOC_VERSION}/pandoc-${PANDOC_VERSION}-linux-amd64.tar.gz" \
     -o /tmp/pandoc.tar.gz \
     && tar -xzf /tmp/pandoc.tar.gz -C /tmp/ \
@@ -107,6 +108,10 @@ RUN curl -fsSL "https://github.com/astral-sh/uv/releases/download/${UV_VERSION}/
     && chmod 0755 /usr/local/bin/uv /usr/local/bin/uvx \
     && rm -rf /tmp/uv.tar.gz /tmp/uv-x86_64-unknown-linux-musl
 
+# debugpy -- Python remote debugging (used by OpenClaw Python Debugging Skill)
+# installed via uv pip into system Python
+RUN uv pip install --system debugpy==${DEBUGPY_VERSION}
+
 # gron -- JSON flattener for grep
 # archive: gron (flat, no subdirectory)
 RUN curl -fsSL "https://github.com/tomnomnom/gron/releases/download/v${GRON_VERSION}/gron-linux-amd64-${GRON_VERSION}.tgz" \
@@ -116,7 +121,7 @@ RUN curl -fsSL "https://github.com/tomnomnom/gron/releases/download/v${GRON_VERS
     && rm /tmp/gron.tgz
 
 # glow -- Markdown renderer
-# archive: glow_2.1.0_Linux_x86_64/glow (versioned dir)
+# archive: glow_2.1.2_Linux_x86_64/glow (versioned dir)
 RUN curl -fsSL "https://github.com/charmbracelet/glow/releases/download/v${GLOW_VERSION}/glow_${GLOW_VERSION}_Linux_x86_64.tar.gz" \
     -o /tmp/glow.tar.gz \
     && tar -xzf /tmp/glow.tar.gz -C /tmp/ \
@@ -149,7 +154,7 @@ RUN curl -fsSL "https://github.com/junegunn/fzf/releases/download/v${FZF_VERSION
     && rm /tmp/fzf.tar.gz
 
 # freeze -- code screenshot generator
-# archive: freeze_0.1.6_Linux_x86_64/freeze (versioned dir)
+# archive: freeze_0.2.2_Linux_x86_64/freeze (versioned dir)
 RUN curl -fsSL "https://github.com/charmbracelet/freeze/releases/download/v${FREEZE_VERSION}/freeze_${FREEZE_VERSION}_Linux_x86_64.tar.gz" \
     -o /tmp/freeze.tar.gz \
     && tar -xzf /tmp/freeze.tar.gz -C /tmp/ \
@@ -158,7 +163,7 @@ RUN curl -fsSL "https://github.com/charmbracelet/freeze/releases/download/v${FRE
     && rm -rf /tmp/freeze.tar.gz /tmp/freeze_${FREEZE_VERSION}_Linux_x86_64
 
 # vhs -- terminal recorder to GIF
-# archive: vhs_0.9.0_Linux_x86_64/vhs (versioned dir)
+# archive: vhs_0.11.0_Linux_x86_64/vhs (versioned dir)
 RUN curl -fsSL "https://github.com/charmbracelet/vhs/releases/download/v${VHS_VERSION}/vhs_${VHS_VERSION}_Linux_x86_64.tar.gz" \
     -o /tmp/vhs.tar.gz \
     && tar -xzf /tmp/vhs.tar.gz -C /tmp/ \
@@ -167,7 +172,7 @@ RUN curl -fsSL "https://github.com/charmbracelet/vhs/releases/download/v${VHS_VE
     && rm -rf /tmp/vhs.tar.gz /tmp/vhs_${VHS_VERSION}_Linux_x86_64
 
 # git-cliff -- changelog generator
-# archive: git-cliff-2.9.0/git-cliff (versioned dir)
+# archive: git-cliff-2.13.1/git-cliff (versioned dir)
 RUN curl -fsSL "https://github.com/orhun/git-cliff/releases/download/v${GITCLIFF_VERSION}/git-cliff-${GITCLIFF_VERSION}-x86_64-unknown-linux-musl.tar.gz" \
     -o /tmp/gitcliff.tar.gz \
     && tar -xzf /tmp/gitcliff.tar.gz -C /tmp/ \
