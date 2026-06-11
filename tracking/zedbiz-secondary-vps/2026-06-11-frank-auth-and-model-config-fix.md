@@ -80,3 +80,11 @@ The `openai-codex` provider ID from earlier versions appears to have been unifie
 - Phase 1.4 LLM Model Picker: updated fallback chain, pricing table, deprecated model notes
 - Phase 1.4a OpenAI OAuth Provider: updated provider naming, fallback chain, auth flow notes
 - Both bumped to v4
+
+---
+
+## Edith (VPS1) OAuth -- Completed 2026-06-11 11:30 MDT
+- `docker exec -it edith openclaw models auth login --provider openai --device-code`
+- Auth profile: `openai:jzedbiz@gmail.com` stored in SQLite
+- Token expires: 2026-06-21
+- Status: Confirmed via `docker exec edith openclaw models auth list`
