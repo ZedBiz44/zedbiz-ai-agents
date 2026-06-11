@@ -110,7 +110,7 @@ RUN curl -fsSL "https://github.com/astral-sh/uv/releases/download/${UV_VERSION}/
 
 # debugpy -- Python remote debugging (used by OpenClaw Python Debugging Skill)
 # installed via uv pip into system Python
-RUN uv pip install --system debugpy==${DEBUGPY_VERSION}
+RUN uv pip install --system --break-system-packages debugpy==${DEBUGPY_VERSION}
 
 # gron -- JSON flattener for grep
 # archive: gron (flat, no subdirectory)
