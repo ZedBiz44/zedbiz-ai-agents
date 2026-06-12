@@ -43,8 +43,42 @@ Date | Author | Status: 2026-06-12 | Cody | Completed
 - Edith container remained healthy.
 - Inga container remained healthy.
 
+## Ownership Completion Pass
+
+- After confirming Edith and Inga could write to their core Markdown files inside `workspace`, completed the top-level ownership rollout for the remaining active VPS1 agents.
+- Changed the remaining active top-level agent roots to `jackadmin:jackadmin`:
+  - `amanda`
+  - `edith`
+  - `inga`
+  - `victor`
+  - `wilma`
+- Confirmed all active top-level agent roots are now `jackadmin:jackadmin 775`.
+- Left `workspace` directories owned by `ubuntu:ubuntu` / UID `1000`, so runtime writes inside each agent workspace still work.
+- Verified workspace write tests passed after the change for:
+  - `amanda`
+  - `edith`
+  - `inga`
+  - `victor`
+  - `wilma`
+- Verified all active VPS1 containers remained healthy:
+  - `amanda`
+  - `edith`
+  - `gohzed`
+  - `grogar`
+  - `inga`
+  - `maggie`
+  - `marsha`
+  - `terry`
+  - `victor`
+  - `vivian`
+  - `wilma`
+- Left special folders unchanged:
+  - `/opt/openclaw/agents/backups` remains `root:root 755`
+  - `/opt/openclaw/agents/workspace` remains `root:root 755`
+  - `/opt/openclaw/agents/zara` remains `root:root 755`
+
 ## Decision
 
 - Permission normalization is safe and completed.
-- Ownership normalization to `jackadmin:jackadmin` is not safe as a blanket rule for VPS1 agent roots.
-- For VPS1, active agent roots that runtime UID `1000` may write to should remain UID/GID `1000:1000` unless the container model is changed.
+- Ownership normalization to `jackadmin:jackadmin` is safe for the top-level active agent roots when the agent workspace directories remain owned by UID `1000`.
+- Runtime-owned workspaces should not be recursively changed; keep them UID/GID `1000:1000` so agents can continue writing their working files.
