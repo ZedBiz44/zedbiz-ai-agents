@@ -137,6 +137,23 @@ Date | Author | Status: 2026-06-12 | Cody | Fixed And Verified
 - Marsha: succeeded on the exact Notion page workflow and used `codex_apps.notion_fetch`, `codex_apps.read_mcp_resource`, and `codex_apps.notion_notion-update-page`.
 - Each agent added a new limerick at the top of the page and signed it with their name.
 
+## Marsha Discord Follow-Up
+
+- User reported that Marsha worked from web chat/control panel, but failed from Discord for the TEST Notion page:
+  - `https://app.notion.com/p/TEST-Notion-37da3e33d581800f8319c24b2d79a8bb?source=copy_link`
+- Live trace confirmed the difference:
+  - Web/control-panel session used `codex_apps.notion_fetch` and `codex_apps.notion_notion-update-page`.
+  - Discord channel session `agent:main:discord:channel:1492966441169981632` did not receive `codex_apps.notion_*` tools and incorrectly reported an `openclaw` integration sharing problem.
+- Root cause was a stale Discord channel session/thread binding, not a Notion page permission issue.
+- OpenClaw Codex harness docs note that thread app config is computed when a Codex harness session is established or a stale binding is replaced; it is not recomputed on every turn.
+- Ran a soft reset only on Marsha's Discord channel session.
+- After reset, Marsha's Discord session created a new session id and successfully used Codex Apps Notion tools.
+- Exact TEST page workflow then passed from the Discord session key:
+  - Color reported: `Blue`
+  - Limerick added at the top and signed `Marsha`
+  - Tools used: `codex_apps.notion_fetch` and `codex_apps.notion_notion-update-page`
+- No container restart or broader fleet change was required.
+
 ## Operational Lesson
 
 - Do not install plain Notion MCP as the first fix for this workflow.
@@ -144,3 +161,4 @@ Date | Author | Status: 2026-06-12 | Cody | Fixed And Verified
 - If an agent can use generic Notion API tools but cannot access the user's shared workspace page, check whether it is receiving `codex_apps.notion_*` tools.
 - If not, check for legacy `codex/gpt-*` refs, legacy `openai-codex:*` auth routing, and stale session route pins.
 - Use `openclaw doctor --fix` on one agent first, restart, then verify the exact page workflow before rolling out.
+- After repairing config/runtime routing, reset any existing Discord channel session that still fails, because old channel bindings may keep the previous Codex app/tool set.
