@@ -1,15 +1,20 @@
-# Agent Notion Author Frontmatter Rule Rollout - 2026-06-13
+# Agent Notion Page Creation Rule - 2026-06-13
 
 Date: 2026-06-13 | Author: Cody | Status: Completed
 
 ## Summary
 
-Added a Notion page creation rule to live agent `AGENTS.md` files so each agent uses its own name in page front matter instead of defaulting to Cody.
+Updated each live agent `AGENTS.md` file with the shorter Notion page creation rule requested by Jack.
 
-Required visible front matter pattern:
+Final rule format:
 
 ```text
-Date: YYYY-MM-DD | Author: {Agent Name} | Status: Draft plan for review
+## Notion Page Creation
+When creating a Notion page, add this line directly below the title with todays date, your name as the Author and the relevant Status:
+
+Date: 2026-06-13 | Author: {Agent Name} | Status: [Insert Status]
+
+Status Options: Draft, Review, or Final.
 ```
 
 ## Scope
@@ -28,7 +33,7 @@ VPS1 Docker agents updated:
 - Vivian
 - Wilma
 
-VPS2 folder/systemd agents updated:
+VPS2 folder agents updated:
 
 - Frank
 - Harry
@@ -36,14 +41,14 @@ VPS2 folder/systemd agents updated:
 
 ## Verification
 
-Confirmed each updated `AGENTS.md` contains the correct agent-specific author example:
+Confirmed each updated `AGENTS.md` contains the short rule with the correct agent-specific author line.
 
-- VPS1 examples include `Author: Amanda`, `Author: Edith`, `Author: Gohzed`, `Author: Grogar`, `Author: Inga`, `Author: Maggie`, `Author: Marsha`, `Author: Terry`, `Author: Victor`, `Author: Vivian`, and `Author: Wilma`.
-- VPS2 examples include `Author: Frank`, `Author: Harry`, and `Author: Suzy`.
-- Literal `Author: Cody` checks returned no matches in the updated live agent `AGENTS.md` files.
+Examples:
 
-## Notes
+- `Date: 2026-06-13 | Author: Amanda | Status: [Insert Status]`
+- `Date: 2026-06-13 | Author: Harry | Status: [Insert Status]`
+- `Date: 2026-06-13 | Author: Suzy | Status: [Insert Status]`
 
-- Each live file was backed up before editing with a `bak-notion-author-rule` suffix.
-- No agent containers or services were restarted.
-- Frank was found on VPS2 as a live workspace but did not appear in the Agent Registry search results used during this pass; he was still included because the live workspace exists.
+Checked that the previous longer wording containing `do not default` is no longer present in the updated live files.
+
+No agent containers or services were restarted.
