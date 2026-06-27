@@ -10,6 +10,7 @@ Date: 2026-06-27 | Agent: Cody | Status: Final
 - Enabled Frank's Discord channel bridge and Discord skill in OpenClaw.
 - Restricted Frank's Discord guild access to the ZedBiz Agents `#frank` channel.
 - Restarted `openclaw-frank` and verified the web gateway and Discord path.
+- Approved the Discord DM pairing request for the owner's Discord user after the first approval attempt had used the wrong node-pairing path.
 
 ## Live System
 
@@ -42,8 +43,13 @@ Date: 2026-06-27 | Agent: Cody | Status: Final
 - Discord API confirmed access to channel `#frank`.
 - `systemctl is-active openclaw-frank` returned `active`.
 - `https://frank.zbiz.ca` returned HTTP 200.
-- A Discord test message was sent through Frank's configured bot and read back successfully.
-- Test message ID: `1520525937769316472`.
+- A Discord channel test message was sent through Frank's configured bot and read back successfully.
+- Channel test message ID: `1520525937769316472`.
+- Discord DM pairing request code `L6ZEAPFP` was approved for Discord user `864290378395025478`.
+- `openclaw pairing list discord` returned no pending requests after approval.
+- A confirmation DM was sent through Frank after approval.
+- Confirmation DM message ID: `1520547482277253210`.
+- `openclaw-frank` remained active after approval.
 
 ## Backups
 
