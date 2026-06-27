@@ -28,3 +28,15 @@ Date: 2026-06-27 | Agent: Cody | Status: Final
 - Add `DISCORD_BOT_TOKEN` to `/root/.openclaw-suzy/.env` as a 1Password reference once the correct item path is confirmed.
 - Add Suzy's Discord server/channel allowlist under `channels.discord` in `/root/.openclaw-suzy/openclaw.json`, matching Harry's known-good pattern but with Suzy's channel ID.
 - Restart `openclaw-suzy.service` again and confirm Discord gateway startup logs.
+
+## Follow-Up Update
+
+- Replaced Suzy's incorrect 1Password service account token in `/root/.openclaw-suzy/.op.token`; the previous token was backed up on the VPS.
+- Verified the corrected service account can read `agent-suzy`, including `discord-bot-token-suzy` and `discord-channel-id-suzy`.
+- Verified the Suzy bot token resolves to Discord bot `suzy-openclaw` / `1505685866461270107`.
+- Added `DISCORD_BOT_TOKEN=op://agent-suzy/discord-bot-token-suzy/credential` to `/root/.openclaw-suzy/.env`.
+- Added `channels.discord` config for ZedBiz Agents / `#suzy` (`1520512158356471818`) and enabled the Discord plugin in `/root/.openclaw-suzy/openclaw.json`.
+- Added command owner allowlist for Jack's Discord user ID.
+- Restarted `openclaw-suzy.service` and verified OpenClaw loaded the Discord plugin, resolved `#suzy`, and initialized the Discord client.
+- Ran `openclaw doctor`; no Discord config errors remained.
+- Remaining blocker: Discord channel permissions. Suzy's bot token returned `403 Missing Permissions` when trying to post to `#suzy`; Harry's bot token also could not change the permission overwrite (`403 Missing Access`). A Discord server admin must grant `suzy-openclaw` Send Messages and Read Message History in `#suzy`.
