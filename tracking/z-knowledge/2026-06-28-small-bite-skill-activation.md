@@ -1,6 +1,6 @@
 # 2026-06-28 | Cody | Small-Bite Skill Activation For Z-Knowledge Agents
 
-Date: 2026-06-28 | Author: Cody | Status: Complete with one GitHub repo creation blocker
+Date: 2026-06-28 | Author: Cody | Status: Complete
 
 ## Summary
 
@@ -19,7 +19,7 @@ The skill's older instructions also treated broad assignments and "get it done" 
 - Updated `zedbiz-knowledge-routing` to route broad first assignments as small bites.
 - Updated `zedbiz-wiki-research` to create the smallest useful wiki update first.
 - Updated `zedbiz-notion-knowledge-publishing` to create or update the one best Notion record first and avoid speculative Z-Connections.
-- Created a local source repo for `small-bite-wiki-research-skill`.
+- Created and pushed the source repo for `small-bite-wiki-research-skill`.
 
 ## Verification
 
@@ -63,19 +63,12 @@ Pushed skill repo commits:
 - `ZedBiz44/zedbiz-knowledge-routing-skill`: `0838f6dcaaa2ac10ab8466b944a3a3c7dba7e4ea`
 - `ZedBiz44/zedbiz-wiki-research-skill`: `08e4c0d58dfc037392eb6c9bc9aa5a5a1022925f`
 - `ZedBiz44/zedbiz-notion-knowledge-publishing-skill`: `fd40139e49a55a64e69ccae02c8fcb7247749f72`
+- `ZedBiz44/small-bite-wiki-research-skill`: `c60850bbef60f66b709490060b08bbc4391634f7`
 
-Local-only repo prepared:
+Local small-bite source path:
 
-- Local path: `D:\Google Drive\Documents\Codex-Projects\ZedBiz-Skill-Repos\small-bite-wiki-research-skill`
-- Local commit: `c60850bbef60f66b709490060b08bbc4391634f7`
-- Intended remote: `https://github.com/ZedBiz44/small-bite-wiki-research-skill.git`
+- `D:\Google Drive\Documents\Codex-Projects\ZedBiz-Skill-Repos\small-bite-wiki-research-skill`
 
-GitHub repo creation blocker:
+## Current Operating Guidance
 
-- The GitHub connector available in this session can write files inside existing repositories but does not expose repository creation.
-- Local `gh` CLI is not installed.
-- Push failed with `Repository not found` because `ZedBiz44/small-bite-wiki-research-skill` does not exist yet.
-
-## Follow-Up
-
-Create an empty GitHub repo named `small-bite-wiki-research-skill` under `ZedBiz44`, then push the prepared local repo from `D:\Google Drive\Documents\Codex-Projects\ZedBiz-Skill-Repos\small-bite-wiki-research-skill`.
+For first Z-Knowledge assignments, agents should start with one useful small bite: scope, duplicate check, light source review, and one best saved artifact when justified. They should only continue into a full staged wiki, Notion, and Z-Connections buildout when Jack explicitly asks for that continuation.
