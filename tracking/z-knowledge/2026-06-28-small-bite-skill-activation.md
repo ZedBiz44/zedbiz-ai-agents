@@ -72,3 +72,19 @@ Local small-bite source path:
 ## Current Operating Guidance
 
 For first Z-Knowledge assignments, agents should start with one useful small bite: scope, duplicate check, light source review, and one best saved artifact when justified. They should only continue into a full staged wiki, Notion, and Z-Connections buildout when Jack explicitly asks for that continuation.
+## Follow-Up Verification - VPS2 Runtime Skill Path
+
+After a direct re-check, VPS2 required the four research skills in the runtime-discovered path:
+
+- Harry: `/root/.openclaw-harry/.openclaw/skills`
+- Frank: `/root/.openclaw-frank/.openclaw/skills`
+- Suzy: `/root/.openclaw-suzy/.openclaw/skills`
+
+The earlier `workspace/skills` copies were present, but OpenClaw's live `skills list` did not discover them from that location.
+
+Final VPS2 verification now passes. With `HOME` set to each agent's runtime home and the matching `/opt/openclaw-{agent}` OpenClaw binary, `openclaw skills list --eligible` shows all four skills as ready for Harry, Frank, and Suzy:
+
+- `small-bite-wiki-research`
+- `zedbiz-knowledge-routing`
+- `zedbiz-notion-knowledge-publishing`
+- `zedbiz-wiki-research`
