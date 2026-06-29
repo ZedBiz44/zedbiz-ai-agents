@@ -2,7 +2,7 @@
 
 Date: 2026-06-29  
 Agent: Cody  
-Status: Built / deployment blocked by missing cPanel username
+Status: Built / deployment blocked by cPanel host timeout
 
 ## Summary
 - Built a static ZedBiz Agent Login Dashboard intended for `https://agents.zbiz.ca`.
@@ -30,17 +30,19 @@ Status: Built / deployment blocked by missing cPanel username
 ## Deployment Attempt
 - User provided a cPanel API token on 2026-06-29.
 - Tested likely cPanel usernames against a harmless cPanel API call; none authenticated.
-- cPanel API requires the cPanel account username plus the token in the auth header.
-- Checked whether the token was WHM-level; no usable WHM auth path was available from this session.
-- After repeated API/login probes, the shared hosting endpoint began timing out from the local machine.
+- User then provided the cPanel username `zbizagents`.
+- Retried cPanel API using `zbizagents` plus the provided token.
+- The cPanel host timed out before authentication: `https://rssd5273.webaccountserver.com:2083` and `https://agents.zbiz.ca/cpanel` both failed to respond from the local machine.
+- DNS changed during the session: `rssd5273.webaccountserver.com` resolved to `192.138.189.182`, while `agents.zbiz.ca` remained `192.138.189.155`.
+- Also tested the original IP with Host-header resolution; port 2083 still timed out.
 - Checked local Wrangler; Wrangler is installed but not authenticated.
 - Checked local environment and project notes for Cloudflare tokens; none were available.
 - Cloudflare connector tools were not exposed in this session, so direct Cloudflare Pages deployment could not be completed.
 
 ## Current Blocker
-Deployment still needs one of these:
-- The cPanel account username for `rssd5273.webaccountserver.com`, to use with the provided cPanel API token; or
-- A Cloudflare API token/account path usable by Wrangler or the Cloudflare connector, if we want to publish this as a Cloudflare Pages site and repoint `agents.zbiz.ca`.
+Deployment is ready, but the reachable publishing path is blocked:
+- cPanel username and token are now available, but the cPanel host is timing out from this machine.
+- Cloudflare deployment needs either an authenticated Wrangler session, callable Cloudflare connector tools, or a Cloudflare API token/account ID.
 
 ## Next Step
-Preferred fast path: provide the cPanel account username. Then use the existing dashboard package to upload `index.html` and `assets/` into the web root for `agents.zbiz.ca`, verify `https://agents.zbiz.ca`, and update this record to complete.
+Fastest path once the cPanel host is reachable again: use username `zbizagents` plus the existing token to query the domain document root, upload `dist/index.html` and `dist/assets/`, then verify `https://agents.zbiz.ca`.
